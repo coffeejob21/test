@@ -6,17 +6,16 @@ import org.junit.Test;
 import java.util.Date;
 
 import static com.we2seek.mvndemo.DateUtils.isInInterval;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Vitaliy Timchenko on 15.04.16 15:39.
- */
 public class DateUtilsTest {
     private Date now;
 
     @Before
     public void setUp() {
         this.now = new Date();
+        DateUtils.setDateToCompare(this.now);
     }
 
     @Test
@@ -30,7 +29,7 @@ public class DateUtilsTest {
         System.out.printf("Start: \t%s%s", start, newLine);
         System.out.printf("End: \t%s%s%s", end, newLine, newLine);
 
-        assertTrue(isInInterval(now, start, end));
+        assertTrue(isInInterval(start, end));
     }
 
     @Test
@@ -44,7 +43,7 @@ public class DateUtilsTest {
         System.out.printf("Start: \t%s%s", start, newLine);
         System.out.printf("End: \t%s%s%s", end, newLine, newLine);
 
-        assertFalse(isInInterval(now, start, end));
+        assertFalse(isInInterval(start, end));
     }
 
     @Test
@@ -58,7 +57,7 @@ public class DateUtilsTest {
         System.out.printf("Start: \t%s%s", start, newLine);
         System.out.printf("End: \t%s%s%s", end, newLine, newLine);
 
-        assertFalse(isInInterval(now, start, end));
+        assertFalse(isInInterval(start, end));
     }
 
     @Test
@@ -72,7 +71,7 @@ public class DateUtilsTest {
         System.out.printf("Start: \t%s%s", start, newLine);
         System.out.printf("End: \t%s%s%s", end, newLine, newLine);
 
-        assertFalse(isInInterval(now, start, end));
+        assertFalse(isInInterval(start, end));
     }
 
     @Test
@@ -86,22 +85,36 @@ public class DateUtilsTest {
         System.out.printf("Start: \t%s%s", start, newLine);
         System.out.printf("End: \t%s%s%s", end, newLine, newLine);
 
-        assertFalse(isInInterval(now, start, end));
+        assertFalse(isInInterval(start, end));
     }
 
     @Test(expected = NullPointerException.class)
     public void dateFromEqualsNull() {
-        isInInterval(now, null, new Date());
+        isInInterval(null, new Date());
     }
 
     @Test(expected = NullPointerException.class)
     public void dateToEqualsNull() {
-        isInInterval(now, new Date(), null);
+        isInInterval(now, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void datesAreEquals() {
-        isInInterval(now, now, now);
+        isInInterval(now, now);
+    }
+
+    // start = "23:00", end = "06:00"
+    @Test
+    public void startDateGreaterThanEndDate() {
+        Date start = new Date(now.getTime() - 5_000);
+        Date end = new Date(now.getTime() - 3600_000 * 5);
+
+        assertTrue(isInInterval(start, end));
+    }
+
+    @Test
+    public void nowInIntervalOfTime() {
+        assertTrue(isInInterval("14:00", "15:00"));
     }
 
 }

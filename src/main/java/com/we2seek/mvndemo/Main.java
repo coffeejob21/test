@@ -19,6 +19,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println(DateUtils.isInInterval(now, start, end));
+        System.out.println(DateUtils.isInInterval(start, end));
     }
 }
