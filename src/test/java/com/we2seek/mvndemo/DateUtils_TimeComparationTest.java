@@ -1,5 +1,6 @@
 package com.we2seek.mvndemo;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -7,11 +8,13 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class DateUtils_TimeComparationTest {
-    private final String newLine = System.getProperty("line.separator");
+
+    final static Logger logger = Logger.getLogger("tests.timecomparation");
+
     private String inputTime;
     private String startTime;
     private String endTime;
@@ -42,21 +45,30 @@ public class DateUtils_TimeComparationTest {
                 {"05:59", "23:00", "06:00", true},
                 {"06:00", "23:00", "06:00", false},
                 {"06:01", "23:00", "06:00", false},
+
+                {"0:21", "23:00", "06:00", true},
+                {"0:00", "23:00", "06:00", true},
+                {"5:59", "23:00", "06:00", true},
+
+                {"0:21", "09:00", "19:00", false},
+
         });
     }
 
     @Test
     public void timeBetween() {
-        boolean result = DateUtils.isTimeBetween(inputTime, startTime, endTime);
-        System.out.printf("%s %s %s %s %s",
+        boolean actualResult = DateUtils.isTimeBetween(inputTime, startTime, endTime);
+        boolean isPassed = expectedResult == actualResult;
+
+        String logText = String.format("%s [%s-%s] %s",
                 inputTime,
                 startTime,
                 endTime,
-                expectedResult == result ? "PASSED" : "NOT PASSED",
-                newLine
+                isPassed ? "PASSED" : "NOT PASSED, expected: " + expectedResult + ", actual: " + actualResult
         );
 
-        assertEquals(expectedResult, result);
+        logger.debug(logText);
+        assertTrue(isPassed);
     }
 
 }
